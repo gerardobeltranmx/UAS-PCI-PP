@@ -96,7 +96,7 @@ while(1){
 	 char msg_envio[50]="Bienvenido: ", msg_recibo[50];
         //Recibe mensaje del cliente
       read(socket_hijo, msg_recibo, sizeof(msg_recibo));
-	   
+	   printf("%s\n",msg_recibo );
 	  strcat(msg_envio, msg_recibo);  
 	  strcat(msg_envio, "\n");  
                  
