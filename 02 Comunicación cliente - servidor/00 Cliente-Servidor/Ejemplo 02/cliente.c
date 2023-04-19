@@ -5,7 +5,8 @@
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
-// programa que establece conexion con un servidor y recibe una mensaje.
+//Envia el usuario su nombre desde la linea de comandos
+//  al servidor y recibe un saludo.
 int main(int argc, char *argv[]){
 
 int mi_socket = 0;
@@ -15,8 +16,8 @@ char Mensaje[256] = "";
 struct hostent *hostinfo;
 struct sockaddr_in dir;
 
-if(argc != 3){
-   printf("Use: %s <servidor> <puerto>\n", argv[0]);
+if(argc != 4){
+   printf("Use: %s <servidor> <puerto>  <su nombre>\n", argv[0]);
    exit(1);
 
 }//fin del if
@@ -45,8 +46,8 @@ hostinfo = gethostbyname(argv[1]);
 if(hostinfo == NULL)
 	return 1;
 
-dir.sin_addr = *((struct in_addr *) hostinfo->h_addr);
-dir.sin_port = htons(puerto);
+  dir.sin_addr = *((struct in_addr *) hostinfo->h_addr);
+  dir.sin_port = htons(puerto);
 
 //conectar la direccion y puerto a nuestro socket
 estado = connect(mi_socket, (struct sockaddr *)&dir, sizeof(dir));
@@ -61,14 +62,22 @@ if(estado == 0){
 	exit(1);
 }//fin del if
 
-//obtener el mensaje desde el servidor
+//envia el mensaje al  servidor
+
+estado = write(mi_socket, argv[3] , sizeof(Mensaje));
+
+if(estado <= 0){
+	printf("Error al enviar mensaje al servidor");
+}
+
+//recibe mensaje del servidor
 estado = read(mi_socket, Mensaje, sizeof(Mensaje));
 
 if(estado > 0){
-	printf("%s\n", Mensaje);
+	printf("%s", Mensaje);
 }else
 {
-	printf("Error al recibir mensaje \n");
+	printf("Error al recibir mensaje del servidor\n");
 }//fin del if
 
 close(mi_socket);

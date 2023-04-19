@@ -8,7 +8,7 @@
 #include<string.h>
 
 char Mensaje[]="Hola desde el Servidor\n";
-// Programa que envia un saludo a los clientes que establecen una conexion
+// Programa que envia un saludo a los clientes que establecen una conexión
 int main(int argc, char *argv[]){
 
 int mi_socket = 0;
