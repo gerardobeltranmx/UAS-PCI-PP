@@ -1,9 +1,13 @@
-#include<stdio.h>
-#include<sys/types.h>
-#include<sys/socket.h>
-#include<netdb.h>
 #include<stdlib.h>
+#include<stdio.h>
+#include<netinet/in.h>
+#include<netdb.h>
+#include<sys/socket.h>
+#include<sys/types.h>
+#include<unistd.h>
 #include<string.h>
+#include<time.h>
+
 
 const char Mensaje[]="Hola desde el Servidor\n";
 
@@ -89,7 +93,7 @@ while(1){
 	if(socket_hijo == -1){
 
 		fprintf(stderr, "Cannot accept connections!\n");
-		close(socket);
+		close(mi_socket);
 		exit(1);
 	}//fin del if
 
@@ -102,13 +106,13 @@ while(1){
   timeinfo = (struct tm *)localtime ( &rawtime );
 //  printf ( "The current date/time is: %s", asctime (timeinfo) );
 
-	send(socket_hijo, (char*) asctime (timeinfo), strlen(Mensaje),0);
+	send(socket_hijo, (char*) asctime (timeinfo), strlen((char*) asctime (timeinfo)),0);
 	close(socket_hijo);
 
 }//fin del while
 
 
-close(socket);
+close(mi_socket);
 
 return 0;
 
