@@ -3,7 +3,11 @@
 #include <unistd.h>
 int main(int argc, char *argv[]) {
 
+<<<<<<< HEAD
 	FILE *da;  // Descriptor de archivos tipo FILE
+=======
+	FILE *da;  // Descriptor de archivos tipo FILE fgdg
+>>>>>>> b3f6970c0dc2c80c8e327319ea66210a32628570
 	int i, cont, suma=0, mult=0;
     int  a[2], b[2]; //Descriptores de tuberias
 	int valor; // Variables de trabajo
