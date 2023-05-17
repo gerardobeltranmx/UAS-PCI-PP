@@ -7,8 +7,7 @@
 #include<unistd.h>
 #include<string.h>
 #include <arpa/inet.h>
-// recibe 2 valores desde los cliente y retorna la suma
-const char Mensaje[254]="Hola desde el Servidor\n";
+// recibe peticion de pagina web desde un navegador web
  char* paginaerror = "<html><head><title>Error 404</title></head><body><h1>No existe esa pagina</h1></body></html>";
 
 char encabezado[] = "HTTP/1.1 200 OK\r\n" 
@@ -32,10 +31,8 @@ exit(1);
 mi_socket = socket(AF_INET, SOCK_STREAM, 0);
 
 if(mi_socket == -1){
-
 	printf("No es posible crear socket!!\n");
 	exit(1);
-
 }
 else{
 	printf("Socket Creado\n");
@@ -58,16 +55,11 @@ estado = bind(mi_socket, (struct sockaddr *)&dir, sizeof(dir));
 
 
 if(estado == 0){
-
 	printf("Enlace completado\n");
-
-}else
-{
-
+}else{
 	printf("No es posible enlace con la direccion\n");
 	close(mi_socket);
 	exit(1);
-
 }//fin del if
 
 
@@ -75,16 +67,13 @@ if(estado == 0){
 estado = listen(mi_socket, 5);
 
 if(estado == -1){
-
 	printf("No es posible escuchar por el socket\n");
 	close(mi_socket);
 	exit(1);	
-
 }//fin del if
 
 
 while(1){
-
 	struct sockaddr_in cliente = { 0 };
 	int socket_hijo = 0;
 	socklen_t long_cliente = sizeof(cliente);
@@ -92,18 +81,17 @@ while(1){
 	socket_hijo = accept(mi_socket, (struct sockaddr *)&cliente, &long_cliente);
 
 	if(socket_hijo == -1){
-
 		printf("No acepta conexiones!\n");
 		close(mi_socket);
 		exit(1);
 	}//fin del if
 	
 	//manejar la nueva solicitud de conexion
-	char msg_recibo[50];
+	char peticion[100];
 	//Recibe valores del cliente
-    int len = read(socket_hijo, msg_recibo, sizeof(msg_recibo));
-	msg_recibo[len]='\0';
-	printf("%s\n",msg_recibo );
+    int len = read(socket_hijo, peticion, sizeof(peticion));
+	peticion[len]='\0';
+	printf("%s\n",peticion );
 
  	int i=0;
 	char pagina[50];
@@ -112,8 +100,8 @@ while(1){
 	char caracter;
 	int cont;
 	 	 //--Aqui se busca despues del GET la pagina pedida//
-    while (msg_recibo[5 + i] != ' '){
-        pagina[i] = msg_recibo[5 + i];
+    while (peticion[5 + i] != ' '){
+        pagina[i] = peticion[5 + i];
         i++;
 	}
  	if(i>0 ) //--Si la peticion es la pagina prinsipal osea '/' se enviara "index.html"
