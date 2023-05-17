@@ -126,15 +126,16 @@ while(1){
 		strcpy(pagina, "error404.html");
 	}
 
-    printf("se entrega la pagina %s\n", pagina);
-
+    printf("Se entrega la pagina %s\n", pagina);
+	
+	// envia el archivo html
   	if ((archivo = fopen ( pagina, "r"))) {   
   		cont = 0;
 		//--Mientras no sea el final del archivo leera un caracter tras otro
     	while ((caracter = getc(archivo)) != EOF){
 			respuesta[cont++] = caracter ;
 			//---Envia datos al cliente si el Buffer de envio se ha llenado
-			if (cont >= 1024){
+			if (cont >= 1024){ 
 				write (socket_hijo, respuesta, cont);
 				cont = 0;
 			}
