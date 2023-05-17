@@ -112,6 +112,10 @@ while(1){
         i++;
 	}
  	
+	if (strcmp(pagina, "fecha.html")==0){
+		system("./fecha.sh");
+	}
+
 	if(i>0 ) 
       pagina[i] = '\0'; // coloca terminador de cadena
     else // Si no se tiene pagina solicitada,  se enviara "index.html"
