@@ -7,12 +7,17 @@
 #include<unistd.h>
 #include<string.h>
 #include <arpa/inet.h>
-// recibe peticion de pagina web desde un navegador web
- char* paginaerror = "<html><head><title>Error 404</title></head><body><h1>No existe esa pagina</h1></body></html>";
+// recibe petición de pagina web desde un navegador web
 
-char encabezado[] = "HTTP/1.1 200 OK\r\n" 
-"Server: miservidor.com\r\n"
-"Content-Type: text/html; charset=utf-8\r\n\r\n";
+// encabezado http
+char encabezado[] = "HTTP/1.1 200 OK\n" 
+"Server: miservidor.com\n"
+"Content-Type: text/html; charset=utf-8\n\n";
+
+char encabezadoError[] = "HTTP/1.1 404 OK\n" 
+"Server: miservidor.com\n"
+"Content-Type: text/html; charset=utf-8\n\n";
+
 
 int main(int argc, char *argv[]){
 
@@ -20,6 +25,13 @@ int mi_socket = 0;
 int puerto = 0;
 int estado = 0;
 struct sockaddr_in dir;
+
+	int i=0;
+	char pagina[50];
+	char respuesta[1024];
+	FILE *archivo;
+	char caracter;
+	int cont;
 
 if(argc != 2){
 
@@ -44,7 +56,6 @@ puerto = atoi(argv[1]);
 
 //levanta la estructura de direccion
 //utiliza INADD_ANY para relacionar a todas las direcciones locales
-
 dir.sin_family = AF_INET;
 dir.sin_addr.s_addr = htonl(INADDR_ANY);
 dir.sin_port = htons(puerto);
@@ -84,39 +95,42 @@ while(1){
 		printf("No acepta conexiones!\n");
 		close(mi_socket);
 		exit(1);
-	}//fin del if
+	}
 	
 	//manejar la nueva solicitud de conexion
 	char peticion[100];
-	//Recibe valores del cliente
+	//Recibe petición del cliente
     int len = read(socket_hijo, peticion, sizeof(peticion));
 	peticion[len]='\0';
 	printf("%s\n",peticion );
 
- 	int i=0;
-	char pagina[50];
-	char respuesta[1024];
-	FILE *archivo;
-	char caracter;
-	int cont;
-	 	 //--Aqui se busca despues del GET la pagina pedida//
+	i=0;	
+ 	
+	// Se busca despues del GET la pagina solicitada
     while (peticion[5 + i] != ' '){
         pagina[i] = peticion[5 + i];
         i++;
 	}
- 	if(i>0 ) //--Si la peticion es la pagina prinsipal osea '/' se enviara "index.html"
-      pagina[i] = '\0';
-     else
+ 	
+	if(i>0 ) 
+      pagina[i] = '\0'; // coloca terminador de cadena
+    else // Si no se tiene pagina solicitada,  se enviara "index.html"
 	  strcpy(pagina, "index.html");
 
-   printf("se entrega la pagina %s\n", pagina);
-	// envia encabezado
-	send (socket_hijo, encabezado, strlen(encabezado), 0);
+
+	if (access(pagina, F_OK) == 0){ //Si la pagina existe envia el encabezado
+		send (socket_hijo, encabezado, strlen(encabezado), 0);
+	}
+	else { // si la pagina no existe envia el encabezado y establece la pagina de error
+		send (socket_hijo, encabezadoError, strlen(encabezadoError), 0);
+		strcpy(pagina, "error404.html");
+	}
+
+    printf("se entrega la pagina %s\n", pagina);
+
   	if ((archivo = fopen ( pagina, "r"))) {   
   		cont = 0;
-		
-
-  		//--Mientras no sea el final del archivo leera un caracter tras otro
+		//--Mientras no sea el final del archivo leera un caracter tras otro
     	while ((caracter = getc(archivo)) != EOF){
 			respuesta[cont++] = caracter ;
 			//---Envia datos al cliente si el Buffer de envio se ha llenado
@@ -128,10 +142,6 @@ while(1){
 		//---Envia datos al cliente si se llego al final del archivo
     	write (socket_hijo, respuesta, cont);
 	}
-    else
-	 //---Envia pagina de error 404
-      write (socket_hijo, paginaerror,strlen(paginaerror));	
-     
 	fclose(archivo);
 }//fin del while
 
@@ -141,3 +151,5 @@ close(mi_socket);
 return 0;
 
 }//fin del main
+
+
