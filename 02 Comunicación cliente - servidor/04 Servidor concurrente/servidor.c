@@ -90,7 +90,7 @@ while(1){
         //envia el mensaje al cliente
 		sprintf(Mensaje, "Hola desde el servidor, fue atendido por el proceso %d\n", getpid());  
 		write(socket_hijo, Mensaje, strlen(Mensaje));
-        //sleep(10);   
+
 		close(socket_hijo);
       	exit(1);
 	}
