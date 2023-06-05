@@ -1,4 +1,4 @@
-// Distrucion de tareas con for y lastprivate
+// Distribución de tareas con for y lastprivate
 #include <stdio.h>
 #include <omp.h>
 
