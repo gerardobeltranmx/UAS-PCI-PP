@@ -1,14 +1,21 @@
-// Uso de clausula if
+// Uso de clausula num_threads
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 #include <omp.h>
+
+
 int main(int argc, char *argv[]){
 
-  #pragma omp parallel if(argc > 1 && !strcmp("todos",argv[1]))
-  { 	
-    printf("Hola desde  %s \n", argv[0]);
- }
+if (argc==2){
 
+   int num = atoi(argv[1]);
+   
+  #pragma omp parallel num_threads(num)
+  { 	
+    printf("Hola!!! desde el hilo %d\n", omp_get_thread_num());
+  }
+
+}
 
 	
 return 0;

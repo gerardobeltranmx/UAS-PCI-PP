@@ -1,24 +1,14 @@
-// Uso de clausula default
+// Uso de clausula if
 #include <stdio.h>
+#include <string.h>
 #include <omp.h>
-int main(){
-    int x = 2;
-    int y = 1;
-    int z = 3;
-    #pragma omp parallel default(shared) firstprivate(x,z)
-    { 
-        printf("---------------------------------------\n")   ;
-        printf("Region Paralela valor x = %d \n", x);
-        z = x * x + 3; 
-        x = y * 3 + z;
-        y = z + 5; 
-        printf("Region Paralela valor z = %d \n", z);
-    }
+int main(int argc, char *argv[]){
 
-printf("---------------------------------------\n")   ;
-printf("Region Serie valor x  = %d \n", x);
-printf("Region Serie valor y  = %d \n", y);
-printf("Region Serie valor z  = %d \n", z);
+  #pragma omp parallel if(argc > 1 && !strcmp("todos",argv[1]))
+  { 	
+    printf("Hola desde  %s \n", argv[0]);
+ }
+
 
 	
 return 0;

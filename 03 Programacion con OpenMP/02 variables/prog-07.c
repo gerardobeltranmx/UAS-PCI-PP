@@ -1,19 +1,18 @@
-// Distribucion de tareas con for
+// Distrución de tareas con for y lastprivate
 #include <stdio.h>
 #include <omp.h>
-#define N 12
-
 int main( int argc, char *argv[] ){
-        int a[N];
-	int i;
-        int idHilo;
+	int i=5, N=10;
+        int idHilo=6;
 
-        #pragma omp parallel for private(idHilo)
+        #pragma omp parallel for lastprivate(i) private(idHilo) 
         for(i = 0; i < N; i++ ) {
-           a[i] =i*10;
            idHilo=omp_get_thread_num(); 
-           printf("a[%d] = %d asignado en hilo %d \n",i, a[i], idHilo);
-        }
+           printf("Iteración correspondiente al Hilo %d\n", idHilo);
+          }
+
+       printf("El ultimo valor del i es %d \n",i);
+
 
  return 0;
 }
