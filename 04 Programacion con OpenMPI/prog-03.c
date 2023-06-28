@@ -1,3 +1,6 @@
+// Funciones Básicas de Comunicación
+// MPI_Send y MPI_ Recv.
+
 #include <stdio.h>
 #include <mpi.h>
 #define tam 10
@@ -5,7 +8,7 @@
 int idProc, nProc, i, tag = 99, primero, tamBloque, flag, tamNombre;
 char nombre[30];
 int datos[tam];
-long sum, psum;
+long suma, sumaParcial;
 MPI_Status status;
 int main(int argc, char **argv)
 {
@@ -37,30 +40,30 @@ int main(int argc, char **argv)
         /* determina lo que debo sumar yo (nproc-1) */
         primero = idProc * tamBloque;
         /* efectuo mi suma parcial */
-        sum = 0;
+        suma = 0;
         for (i = primero; i < tam ; i++)
-            sum = sum + datos[i];
-            printf ("Mi suma parcial: %10ld\n", sum);
+            suma = suma + datos[i];
+            printf ("Mi suma parcial: %10ld\n", suma);
             /* obtener las sumas parciales y calcula la total */
         for (i = 0; i < nProc - 1; i++)
         {
-            MPI_Recv(&psum, 1, MPI_LONG, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, &status);
-            printf("Respondio %d - envio: %10ld\n", status.MPI_SOURCE, psum);
+            MPI_Recv(&sumaParcial, 1, MPI_LONG, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, &status);
+            printf("Respondio %d - envio: %10ld\n", status.MPI_SOURCE, sumaParcial);
 
-            sum = sum + psum;
+            suma = suma + sumaParcial;
         }
-        printf("Resultado de la suma = %10ld\n", sum);
+        printf("Resultado de la suma = %10ld\n", suma);
     }
     else
     {
         /* recibe mi parte */
         MPI_Recv(datos, tamBloque, MPI_LONG, nProc - 1, tag, MPI_COMM_WORLD, &status);
         /* efectua mi suma parcial */
-        psum = 0;
+        sumaParcial = 0;
         for (i = 0; i < tamBloque; i++)
-            psum = psum + datos[i];
+            sumaParcial = sumaParcial + datos[i];
         /* devuelve mi suma parcial a (nproc - 1) */
-        MPI_Send(&psum, 1, MPI_LONG, nProc - 1, tag, MPI_COMM_WORLD);
+        MPI_Send(&sumaParcial, 1, MPI_LONG, nProc - 1, tag, MPI_COMM_WORLD);
     }
     MPI_Finalize();
 }
