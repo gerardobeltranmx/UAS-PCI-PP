@@ -5,7 +5,7 @@
 
 int main( int argc, char *argv[] ){
         int valor=10; 
-        int i, suma=1; 
+        int i, suma=0; 
         int a[]={10,20,30,40,50};
         int N=5;  
 

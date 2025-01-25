@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <mpi.h>
-#define tam 10
+#define tam 100000000
 
 int idProc, nProc, i, tag = 99, primero, tamBloque, flag, tamNombre;
 char nombre[30];
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     tamBloque = tam / nProc;
     if (idProc == nProc - 1)
     {
-        /* Inicializa el vector a */
+        /* Inicializa el  arreglo datos */
         printf("datos: ");
         for (i = 0; i < tam; i++){
             datos[i] = i + 1;
